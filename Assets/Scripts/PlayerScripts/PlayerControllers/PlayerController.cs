@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Processors;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,10 +16,14 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
     public Transform playerTransform;
+    public Canvas joystickCanvas;
+
     public Vector2 movementInput;
 
     public MainWeaponScript mainWeapon;
     public zarabatanaScript zarabatana;
+
+    public bl_Joystick joystick;
 
     public Dash dashHandler;
     public playerCooldownHandler cooldownHandler;
@@ -30,13 +35,35 @@ public class PlayerController : MonoBehaviour
     public float aimAngle;
     public float aimAngleDegrees;
 
-    private float speed = 4f;
+    private float speed = 30f;
     private float attackSpeed = 1.25f;
 
-    private float health = 20f;
+    private float health = 200f;
 
+    public bool dead;
     public bool attacking;
     public bool dashing;
+
+
+    public float Health
+    {
+        get
+        {
+            return health;
+        }
+
+        set
+        {
+            health = value;
+            Debug.Log(health);
+            if (health <= 0 )
+            {
+                dead = true;
+                
+                animator.SetTrigger("Death");
+            }
+        }
+    }
 
 
     public enum attackDirections
@@ -53,15 +80,23 @@ public class PlayerController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         playerTransform = gameObject.GetComponent<Transform>();
-        controllerInputs = new PlayerInputs();
-        controllerInputs.Player.Enable();
-        controllerInputs.Player.Move.performed += movement;
-        controllerInputs.Player.Attack.performed += Attack;
-        //controllerInputs.Player.DashDirection.performed += dashDirection;
-        controllerInputs.Player.SimpleDash.performed += simpleDash;
-        controllerInputs.Player.Fire.performed += shoot;
 
-        controllerInputs.Player.CloseGame.performed += closeGame;
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            joystickCanvas.enabled = true;
+        } else
+        {
+            joystickCanvas.enabled = false;
+            controllerInputs = new PlayerInputs();
+            controllerInputs.Player.Enable();
+            controllerInputs.Player.Move.performed += movement;
+            controllerInputs.Player.Attack.performed += Attack;
+            //controllerInputs.Player.DashDirection.performed += dashDirection;
+            controllerInputs.Player.SimpleDash.performed += simpleDash;
+            controllerInputs.Player.Fire.performed += shoot;
+
+            controllerInputs.Player.CloseGame.performed += closeGame;
+        }
 
         animator.SetFloat("AttackSpeed", attackSpeed);
     }
@@ -84,6 +119,15 @@ public class PlayerController : MonoBehaviour
             zarabatana.shoot(aimAngle, mouseAngleXY);
             cooldownHandler.barrageCooldownStart();
             //Debug.Log(aimAngle);
+        }
+    }
+
+    public void mobileDash()
+    {
+        if (cooldownHandler.nextDashTimer < Time.time)
+        {
+            rb.AddForce(dashHandler.dashAction(movementInput), ForceMode2D.Impulse);
+            cooldownHandler.dashCooldownStart();
         }
     }
 
@@ -110,7 +154,12 @@ public class PlayerController : MonoBehaviour
     }
     */
 
-    void Attack(InputAction.CallbackContext context)
+
+    public void mobileAttack()
+    {
+        animator.SetTrigger("MainAttack");
+    }
+    private void Attack(InputAction.CallbackContext context)
     {
         //attackProperty = true;
         //animator.SetBool("Attacking", attackProperty);
@@ -120,32 +169,85 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(playerTransform.position);
-        movementInput = controllerInputs.Player.Move.ReadValue<Vector2>();
-        animator.SetFloat("speed", movementInput.magnitude);
-        animator.SetFloat("Vertical", movementInput.y);
-        animator.SetFloat("Horizontal", movementInput.x);
+
+        if (!dead)
+        {
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                if (joystick.Horizontal > 0.0004f)
+                {
+                    movementInput.x = 1;
+                } else if (joystick.Horizontal < -0.0004f)
+                {
+                    movementInput.x = -1;
+                } else
+                {
+                    movementInput.x = 0;
+                    Debug.Log(joystick.Horizontal);
+                }
+
+
+                if (joystick.Vertical > 0.0004f)
+                {
+                    movementInput.y = 1;
+                } else if (joystick.Vertical < -0.0004f)
+                {
+                    movementInput.y = -1;
+                } else
+                {
+                    movementInput.y = 0;
+                }
+            } else
+            {
+                //Debug.Log(playerTransform.position);
+                movementInput = controllerInputs.Player.Move.ReadValue<Vector2>();
+            }
+            animator.SetFloat("speed", movementInput.magnitude);
+            animator.SetFloat("Vertical", movementInput.y);
+            animator.SetFloat("Horizontal", movementInput.x);
+            //Debug.Log(joystick.Vertical);
+        }
     }
 
     private void FixedUpdate()
     {
-        if (movementInput != Vector2.zero && !attacking)
+        if (!dead)
         {
-            //rb.MovePosition(rb.position + movementInput * speed * Time.fixedDeltaTime);
-            rb.AddForce(movementInput * speed * 500 * Time.fixedDeltaTime, ForceMode2D.Force);
+            if (movementInput != Vector2.zero && !attacking)
+            {
+                //rb.MovePosition(rb.position + movementInput * speed * Time.fixedDeltaTime);
+                rb.AddForce(movementInput * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            }
+            mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mouseAim = mousePos - rb.position;
+            aimAngle = Mathf.Atan2(mouseAim.y, mouseAim.x);
+            aimAngleDegrees = (aimAngle * Mathf.Rad2Deg);
+            mouseAngleXY.y = Mathf.Sin(aimAngle);
+            mouseAngleXY.x = Mathf.Cos(aimAngle);
         }
-        mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mouseAim = mousePos - rb.position;
-        aimAngle = Mathf.Atan2(mouseAim.y, mouseAim.x);
-        aimAngleDegrees = (aimAngle * Mathf.Rad2Deg);
-        mouseAngleXY.y = Mathf.Sin(aimAngle);
-        mouseAngleXY.x = Mathf.Cos(aimAngle);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("dihnaoid");
     }
+
+    public void takeKnockback(Vector2 knockbackVector)
+    {
+        if (!dead)
+        {
+            rb.AddForce(knockbackVector, ForceMode2D.Impulse);
+        }
+    }
+
+    public void takeDamage(float damageTaken)
+    {
+        if (!dead)
+        {
+            Health -= damageTaken;
+        }
+    }
+
     private void mainAttackEnable()
     {
         setAttackDirection();
@@ -162,35 +264,39 @@ public class PlayerController : MonoBehaviour
 
     private void setAttackDirection()
     {
-        if (movementInput.x > 0)
+        // attacking is only true after this function is called
+        if (!attacking)
         {
-            attackDirectionVector.x = 1;
-            attackDirectionVector.y = 0;
-            attackDirection = attackDirections.right;
-        }
-        else if (movementInput.x < 0)
-        {
-            attackDirectionVector.x = -1;
-            attackDirectionVector.y = 0;
-            attackDirection = attackDirections.left;
-        }
-        else if (movementInput.y > 0)
-        {
-            attackDirectionVector.x = 0;
-            attackDirectionVector.y = 1;
-            attackDirection = attackDirections.up;
-        }
-        else if (movementInput.y < 0)
-        {
-            attackDirectionVector.x = 0;
-            attackDirectionVector.y = -1;
-            attackDirection = attackDirections.down;
-        }
-        else
-        {
-            attackDirectionVector.x = 1;
-            attackDirectionVector.y = 0;
-            attackDirection = attackDirections.right;
+            if (movementInput.x > 0)
+            {
+                attackDirectionVector.x = 1;
+                attackDirectionVector.y = 0;
+                attackDirection = attackDirections.right;
+            }
+            else if (movementInput.x < 0)
+            {
+                attackDirectionVector.x = -1;
+                attackDirectionVector.y = 0;
+                attackDirection = attackDirections.left;
+            }
+            else if (movementInput.y > 0)
+            {
+                attackDirectionVector.x = 0;
+                attackDirectionVector.y = 1;
+                attackDirection = attackDirections.up;
+            }
+            else if (movementInput.y < 0)
+            {
+                attackDirectionVector.x = 0;
+                attackDirectionVector.y = -1;
+                attackDirection = attackDirections.down;
+            }
+            else
+            {
+                attackDirectionVector.x = 1;
+                attackDirectionVector.y = 0;
+                attackDirection = attackDirections.right;
+            }
         }
     }
 }

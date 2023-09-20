@@ -23,7 +23,7 @@ public class MainWeaponScript : MonoBehaviour
         {
             Enemy enemy = collision.GetComponent<Enemy>();
             enemy.takeDamage(damage);
-            enemy.takeKnockback(knockbackVector * knockbackForce * enemy.rb.mass);
+            enemy.takeKnockback(knockbackVector * knockbackForce / enemy.rb.mass);
             
         }
     }

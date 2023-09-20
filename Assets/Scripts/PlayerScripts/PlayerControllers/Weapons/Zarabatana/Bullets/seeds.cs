@@ -22,7 +22,7 @@ public class seeds : MonoBehaviour
     void Start()
     {
         speed = 10f;
-        damage = 1 * speed;
+        damage = 1;
 
         bulletTransform = gameObject.GetComponent<Transform>();
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -50,7 +50,7 @@ public class seeds : MonoBehaviour
         rb.MovePosition(bulletTransform.position + bulletDirection * speed * Time.fixedDeltaTime);
         distanceTravelled += Mathf.Sqrt(Mathf.Pow(bulletDirection.x * speed * Time.fixedDeltaTime, 2) + Mathf.Pow(bulletDirection.y * speed * Time.fixedDeltaTime, 2));
         
-        if (distanceTravelled >= 1000)
+        if (distanceTravelled >= 6.1)
         {
             Destroy(gameObject);
         }

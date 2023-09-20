@@ -16,7 +16,7 @@ public class playerCooldownHandler : MonoBehaviour
         dashCooldown = 0.6f;
 
         nextBarrage = 0f;
-        zarabatanaCooldown = 0.001f;
+        zarabatanaCooldown = 0.5f;
     }
 
     private void Update()
