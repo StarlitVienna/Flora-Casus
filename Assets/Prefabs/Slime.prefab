@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6922465021276558264
+--- !u!1 &6624497877088702961
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6682059208357447020}
-  - component: {fileID: 4108495047092247936}
-  - component: {fileID: 9112883308025053425}
-  - component: {fileID: 3188734571165979517}
-  - component: {fileID: 3376878424542350816}
-  - component: {fileID: 5816375698089361057}
+  - component: {fileID: 707156833571008131}
+  - component: {fileID: 1527330664004295787}
+  - component: {fileID: 1858216629072222945}
+  - component: {fileID: 5763951892271537381}
+  - component: {fileID: 5036634341572949936}
+  - component: {fileID: 4215236321503349383}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Enemy
@@ -21,28 +21,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6682059208357447020
+--- !u!4 &707156833571008131
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7772856, y: 0.024232918, z: -0.10107708}
+  m_LocalPosition: {x: 8.41, y: 15.75, z: -0.10107708}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &4108495047092247936
+--- !u!212 &1527330664004295787
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -88,13 +88,13 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &9112883308025053425
+--- !u!60 &1858216629072222945
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 3c3ac237d89896b449596fbc4c66eb42, type: 2}
@@ -141,19 +141,19 @@ PolygonCollider2D:
       - {x: 0.5625, y: 0.1875}
       - {x: 0.3125, y: 0.375}
   m_UseDelaunayMesh: 0
---- !u!50 &3188734571165979517
+--- !u!50 &5763951892271537381
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 8
+  m_Mass: 2
   m_LinearDrag: 8
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -168,27 +168,29 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &3376878424542350816
+--- !u!114 &5036634341572949936
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 788f24a05d2fa1d409ef47689567ceb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 3188734571165979517}
---- !u!95 &5816375698089361057
+  rb: {fileID: 5763951892271537381}
+  playerTransform: {fileID: 0}
+  player: {fileID: 0}
+--- !u!95 &4215236321503349383
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922465021276558264}
+  m_GameObject: {fileID: 6624497877088702961}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 980a2d3ebdcda3d4fba93f096b170ae3, type: 2}
