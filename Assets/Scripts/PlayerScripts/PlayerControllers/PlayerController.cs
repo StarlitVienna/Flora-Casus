@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour
     public float aimAngle;
     public float aimAngleDegrees;
 
-    private float speed = 30f;
-    private float attackSpeed = 1.25f;
+    private float speed = 40f;
+    private float attackSpeed = 1.5f;
 
     private float health = 200f;
 
