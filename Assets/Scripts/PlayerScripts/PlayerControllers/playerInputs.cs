@@ -71,6 +71,33 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenDiary"",
+                    ""type"": ""Button"",
+                    ""id"": ""d519e8c9-7e7f-4aea-a7d1-f433280dd501"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""731aa574-7f6f-4147-b428-1d5b601bda05"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Destroy"",
+                    ""type"": ""Button"",
+                    ""id"": ""c4c567a9-9d62-44c7-890a-25f5ffd762dd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -209,7 +236,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e1e9c949-a037-45e6-b4bf-0304b17bd16c"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/g"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -247,6 +274,39 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CloseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d40b46bd-567c-4ccc-a1b9-1f7dbbb3ccd7"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenDiary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5315cb1-c629-42ac-89cc-152a39bf738c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a1521d3-7f60-464a-959d-f7edef04a151"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Destroy"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -839,6 +899,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_SimpleDash = m_Player.FindAction("SimpleDash", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_CloseGame = m_Player.FindAction("CloseGame", throwIfNotFound: true);
+        m_Player_OpenDiary = m_Player.FindAction("OpenDiary", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Destroy = m_Player.FindAction("Destroy", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -917,6 +980,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SimpleDash;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_CloseGame;
+    private readonly InputAction m_Player_OpenDiary;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Destroy;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -926,6 +992,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @SimpleDash => m_Wrapper.m_Player_SimpleDash;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @CloseGame => m_Wrapper.m_Player_CloseGame;
+        public InputAction @OpenDiary => m_Wrapper.m_Player_OpenDiary;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Destroy => m_Wrapper.m_Player_Destroy;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -950,6 +1019,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @CloseGame.started += instance.OnCloseGame;
             @CloseGame.performed += instance.OnCloseGame;
             @CloseGame.canceled += instance.OnCloseGame;
+            @OpenDiary.started += instance.OnOpenDiary;
+            @OpenDiary.performed += instance.OnOpenDiary;
+            @OpenDiary.canceled += instance.OnOpenDiary;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @Destroy.started += instance.OnDestroy;
+            @Destroy.performed += instance.OnDestroy;
+            @Destroy.canceled += instance.OnDestroy;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -969,6 +1047,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @CloseGame.started -= instance.OnCloseGame;
             @CloseGame.performed -= instance.OnCloseGame;
             @CloseGame.canceled -= instance.OnCloseGame;
+            @OpenDiary.started -= instance.OnOpenDiary;
+            @OpenDiary.performed -= instance.OnOpenDiary;
+            @OpenDiary.canceled -= instance.OnOpenDiary;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
+            @Destroy.started -= instance.OnDestroy;
+            @Destroy.performed -= instance.OnDestroy;
+            @Destroy.canceled -= instance.OnDestroy;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1156,6 +1243,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnSimpleDash(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnCloseGame(InputAction.CallbackContext context);
+        void OnOpenDiary(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+        void OnDestroy(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

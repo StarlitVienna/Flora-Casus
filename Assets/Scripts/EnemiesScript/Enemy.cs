@@ -50,6 +50,7 @@ public class Enemy : MonoBehaviour
             {
                 //dead = true;
                 enemyAnimator.SetTrigger("Death");
+                //player.addKill();
             }
         }
     }

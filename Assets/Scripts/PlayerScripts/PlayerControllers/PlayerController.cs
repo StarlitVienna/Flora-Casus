@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Processors;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     public Vector2 movementInput;
 
-    public MainWeaponScript mainWeapon;
+    //public MainWeaponScript mainWeapon;
     public zarabatanaScript zarabatana;
 
     public bl_Joystick joystick;
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public Dash dashHandler;
     public playerCooldownHandler cooldownHandler;
     public Camera cam;
+
+    //public pauseMenu pausing;
 
     public Vector2 mousePos;
     public Vector2 mouseAim;
@@ -38,12 +41,47 @@ public class PlayerController : MonoBehaviour
     private float speed = 40f;
     private float attackSpeed = 1.5f;
 
-    private float health = 200f;
+    private float health = 10f;
+
+    // KILLS
+    private float score = 0;
 
     public bool dead;
     public bool attacking;
     public bool dashing;
 
+
+    public bool isZarabatanaUnlocked;
+
+    public bool isDiaryUnlocked;
+
+    public bool isDashUnlocked;
+
+    public bool isCapeUnlocked;
+
+
+    public bool isCapeOn = false;
+
+
+    public bool gameIsPaused;
+
+    public bool diaryIsOpen;
+
+
+
+    public bool isInCombat;
+
+    // ifx the enemy detect the player is in combat, it will attack it
+
+
+
+    public mainDiaryScript diary;
+    public mortisCanvas mortCanva;
+
+    public flamenguistaScript flamenguista;
+
+
+    public mainHealthBar healthBar;
 
     public float Health
     {
@@ -55,12 +93,15 @@ public class PlayerController : MonoBehaviour
         set
         {
             health = value;
+            mortCanva.forceUpdate();
             Debug.Log(health);
             if (health <= 0 )
             {
                 dead = true;
                 
                 animator.SetTrigger("Death");
+                //pausing.pauseGame();
+                mortCanva.forceUpdate();
             }
         }
     }
@@ -75,8 +116,25 @@ public class PlayerController : MonoBehaviour
     public Vector2 attackDirectionVector;
 
     public PlayerInputs controllerInputs;
+
+    public bool rachaduraInRange;
+
+
+    //public Scene scene = SceneManager.GetActiveScene();
+
+    public void reloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     void Start()
     {
+
+        diaryIsOpen = false;
+        isInCombat = false;
+        isZarabatanaUnlocked = false;
+
+        healthBar.setMaxHealth(health);
+
         rb = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         playerTransform = gameObject.GetComponent<Transform>();
@@ -90,15 +148,133 @@ public class PlayerController : MonoBehaviour
             controllerInputs = new PlayerInputs();
             controllerInputs.Player.Enable();
             controllerInputs.Player.Move.performed += movement;
-            controllerInputs.Player.Attack.performed += Attack;
+            //controllerInputs.Player.Attack.performed += Attack;
             //controllerInputs.Player.DashDirection.performed += dashDirection;
             controllerInputs.Player.SimpleDash.performed += simpleDash;
             controllerInputs.Player.Fire.performed += shoot;
+            controllerInputs.Player.OpenDiary.performed += openCloseDiary;
 
-            controllerInputs.Player.CloseGame.performed += closeGame;
+            controllerInputs.Player.Interact.performed += startADialogue;
+            controllerInputs.Player.Destroy.performed += destroyDam;
+
+            //controllerInputs.Player.CloseGame.performed += closeGame;
         }
 
+        //animator.SetBool("Cape", true);
         animator.SetFloat("AttackSpeed", attackSpeed);
+    }
+
+
+    public int npcIndex = -1;
+
+
+    public bool playerActionsStopped = false;
+
+
+
+    public void setNPCIndex(int indextoset)
+    {
+        npcIndex = indextoset;
+    }
+
+
+    void destroyDam(InputAction.CallbackContext context)
+    {
+        if (rachaduraInRange)
+        {
+            print("DESTRUIÇÃO");
+            animator.SetTrigger("destruirBarragem");
+            lastDestroyedIndex = lastContactDamIndex;
+            print(lastContactDamIndex);
+            sendDestroyedSignal();
+        } else
+        {
+            print("LONGE");
+        }
+    }
+
+    public int lastContactDamIndex = -1;
+    public int lastDestroyedIndex = -1;
+
+    public barragemScript barragemUM;
+    public barragemScript barragemDOIS;
+    public barragemScript barragemTRES;
+
+    void sendDestroyedSignal()
+    {
+        if (lastDestroyedIndex == 1)
+        {
+            barragemUM.destroyedState();
+        } else if (lastDestroyedIndex == 2)
+        {
+            barragemDOIS.destroyedState();
+        } else if (lastDestroyedIndex == 3)
+        {
+            barragemTRES.destroyedState();
+        }
+    }
+
+    public void stopActions()
+    {
+        playerActionsStopped = true;
+    }
+
+    public void resumeActions()
+    {
+        playerActionsStopped = false;
+    }
+
+
+    void startADialogue(InputAction.CallbackContext context)
+    {
+        flamenguista.startDialogue();
+    }
+    void openCloseDiary(InputAction.CallbackContext context)
+    {
+        if (isDiaryUnlocked)
+        {
+            if (diaryIsOpen)
+            {
+                diaryIsOpen = false;
+                gameIsPaused = false;
+                // need to call update for it because its disabled
+                diary.forceUpdate();
+
+            }
+            else
+            {
+                gameIsPaused = true;
+                diaryIsOpen = true;
+                diary.forceUpdate();
+            }
+        }
+    }
+
+    public void addKill()
+    {
+        ++score;
+    }
+
+    public float getScore()
+    {
+        return score;
+    }
+
+    public void putCapeOn()
+    {
+
+        if (isCapeUnlocked)
+        {
+            if (isCapeOn)
+            {
+                isCapeOn = false;
+                animator.SetBool("Cape", false);
+            } else
+            {
+                isCapeOn = true;
+                animator.SetBool("Cape", true);
+            }
+        }
     }
 
     void closeGame(InputAction.CallbackContext context)
@@ -113,30 +289,43 @@ public class PlayerController : MonoBehaviour
 
     void shoot(InputAction.CallbackContext context)
     {
-
-        if (cooldownHandler.nextBarrage < Time.time)
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped && isZarabatanaUnlocked)
         {
-            zarabatana.shoot(aimAngle, mouseAngleXY);
-            cooldownHandler.barrageCooldownStart();
-            //Debug.Log(aimAngle);
+            if (cooldownHandler.nextBarrage < Time.time)
+            {
+                zarabatana.shoot(aimAngle, mouseAngleXY);
+                cooldownHandler.barrageCooldownStart();
+                animator.SetFloat("Horizontal", Mathf.Cos(aimAngle));
+                animator.SetFloat("Vertical", Mathf.Sin(aimAngle));
+                animator.SetTrigger("shoot");
+                //Debug.Log(aimAngle);
+            }
         }
     }
 
     public void mobileDash()
     {
-        if (cooldownHandler.nextDashTimer < Time.time)
+        if (!dead && Time.timeScale > 0.01 && isDashUnlocked && !playerActionsStopped)
         {
-            rb.AddForce(dashHandler.dashAction(movementInput), ForceMode2D.Impulse);
-            cooldownHandler.dashCooldownStart();
+            if (cooldownHandler.nextDashTimer < Time.time)
+            {
+                animator.SetTrigger("dash");
+                rb.AddForce(dashHandler.dashAction(movementInput), ForceMode2D.Impulse);
+                cooldownHandler.dashCooldownStart();
+            }
         }
     }
 
     void simpleDash(InputAction.CallbackContext context)
     {
-        if (cooldownHandler.nextDashTimer < Time.time)
+        if (!dead && Time.timeScale > 0.01 && isDashUnlocked && !playerActionsStopped)
         {
-            rb.AddForce(dashHandler.dashAction(movementInput), ForceMode2D.Impulse);
-            cooldownHandler.dashCooldownStart();
+            if (cooldownHandler.nextDashTimer < Time.time)
+            {
+                animator.SetTrigger("Dash");
+                rb.AddForce(dashHandler.dashAction(movementInput), ForceMode2D.Impulse);
+                cooldownHandler.dashCooldownStart();
+            }
         }
     }
 
@@ -157,21 +346,32 @@ public class PlayerController : MonoBehaviour
 
     public void mobileAttack()
     {
-        animator.SetTrigger("MainAttack");
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
+        {
+            animator.SetTrigger("MainAttack");
+        }
     }
     private void Attack(InputAction.CallbackContext context)
     {
-        //attackProperty = true;
-        //animator.SetBool("Attacking", attackProperty);
-        animator.SetTrigger("MainAttack");
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
+        {
+            //attackProperty = true;
+            //animator.SetBool("Attacking", attackProperty);
+            animator.SetTrigger("MainAttack");
+        }
     }
+
+
+
 
     // Update is called once per frame
     void Update()
     {
 
-        if (!dead)
+
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {
+            healthBar.setHealth(health);
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
                 if (joystick.Horizontal > 0.0004f)
@@ -200,7 +400,13 @@ public class PlayerController : MonoBehaviour
             } else
             {
                 //Debug.Log(playerTransform.position);
-                movementInput = controllerInputs.Player.Move.ReadValue<Vector2>();
+                if (!playerActionsStopped)
+                {
+                    movementInput = controllerInputs.Player.Move.ReadValue<Vector2>();
+                } else
+                {
+                    print("STOPED");
+                }
             }
             animator.SetFloat("speed", movementInput.magnitude);
             animator.SetFloat("Vertical", movementInput.y);
@@ -211,20 +417,40 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!dead)
+        if (!dead && Time.timeScale > 0.01)
         {
-            if (movementInput != Vector2.zero && !attacking)
+            if (!playerActionsStopped)
             {
-                //rb.MovePosition(rb.position + movementInput * speed * Time.fixedDeltaTime);
-                rb.AddForce(movementInput * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                if (movementInput != Vector2.zero && !attacking)
+                {
+                    //rb.MovePosition(rb.position + movementInput * speed * Time.fixedDeltaTime);
+                    rb.AddForce(movementInput * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                }
+                mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+                mouseAim = mousePos - rb.position;
+                aimAngle = Mathf.Atan2(mouseAim.y, mouseAim.x);
+                aimAngleDegrees = (aimAngle * Mathf.Rad2Deg);
+                mouseAngleXY.y = Mathf.Sin(aimAngle);
+                mouseAngleXY.x = Mathf.Cos(aimAngle);
+
+                cooldownHandler.combatTimerCooldownChecker();
+                //isInCombat = cooldownHandler.outOfCombat;
+                if (cooldownHandler.outOfCombat)
+                {
+                    isInCombat = false;
+                }
+                else
+                {
+                    isInCombat = true;
+                }
             }
-            mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            mouseAim = mousePos - rb.position;
-            aimAngle = Mathf.Atan2(mouseAim.y, mouseAim.x);
-            aimAngleDegrees = (aimAngle * Mathf.Rad2Deg);
-            mouseAngleXY.y = Mathf.Sin(aimAngle);
-            mouseAngleXY.x = Mathf.Cos(aimAngle);
+
         }
+    }
+
+
+    void handleCollisions(Collider2D collision)
+    {
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -234,7 +460,7 @@ public class PlayerController : MonoBehaviour
 
     public void takeKnockback(Vector2 knockbackVector)
     {
-        if (!dead)
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {
             rb.AddForce(knockbackVector, ForceMode2D.Impulse);
         }
@@ -242,7 +468,7 @@ public class PlayerController : MonoBehaviour
 
     public void takeDamage(float damageTaken)
     {
-        if (!dead)
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {
             Health -= damageTaken;
         }
@@ -250,22 +476,25 @@ public class PlayerController : MonoBehaviour
 
     private void mainAttackEnable()
     {
-        setAttackDirection();
-        mainWeapon.knockbackVector = attackDirectionVector;
-        mainWeapon.attackEnable();
-        attacking = true;
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
+        {
+            setAttackDirection();
+           // mainWeapon.knockbackVector = attackDirectionVector;
+            //mainWeapon.attackEnable();
+            attacking = true;
+        }
     }
 
     private void mainAttackDisable()
     {
-        mainWeapon.attackDisable();
+        //mainWeapon.attackDisable();
         attacking = false;
     }
 
     private void setAttackDirection()
     {
         // attacking is only true after this function is called
-        if (!attacking)
+        if (!attacking && !dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {
             if (movementInput.x > 0)
             {

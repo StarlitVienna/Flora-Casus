@@ -6,6 +6,8 @@ public class seeds : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    //[SerializeField]
+
     private float speed;
     private float damage;
     private float distanceTravelled;
@@ -13,6 +15,8 @@ public class seeds : MonoBehaviour
     Vector3 bulletDirection;
     Transform bulletTransform;
     Rigidbody2D rb;
+    PlayerController playerController;
+
 
     public void setDirection(Vector3 direction)
     {
@@ -21,22 +25,36 @@ public class seeds : MonoBehaviour
 
     void Start()
     {
-        speed = 10f;
-        damage = 1;
+        speed = 15f;
+        damage = 2;
 
+        //playerController = gameObject.GetComponent<PlayerController>();
         bulletTransform = gameObject.GetComponent<Transform>();
         rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Enemy")
+        if (collision.tag == "oranges")
         {
-            Enemy enemy = collision.GetComponent<Enemy>();
-            enemy.takeDamage(damage);
-            Destroy(gameObject);
+            //Enemy enemy = collision.GetComponent<Enemy>();
+            //enemy.takeDamage(damage);
+            //print("sdofgbiudfgbu");
+            //print("sdofgbiudfgbu");
 
-            Debug.Log(enemy.Health);
+            orangeEnemy enemy = collision.GetComponent<orangeEnemy>();
+            if (!enemy.dead)
+            {
+                enemy.takeDamage(damage);
+                //print("sdofgbiudfgbu");
+                Destroy(gameObject);
+
+                Debug.Log(enemy.Health);
+
+                //playerController.cooldownHandler.combatTimerCooldownStart();
+                //print(playerController.Health);
+                enemy.player.cooldownHandler.combatTimerCooldownStart();
+            }
         }
     }
 
@@ -50,7 +68,7 @@ public class seeds : MonoBehaviour
         rb.MovePosition(bulletTransform.position + bulletDirection * speed * Time.fixedDeltaTime);
         distanceTravelled += Mathf.Sqrt(Mathf.Pow(bulletDirection.x * speed * Time.fixedDeltaTime, 2) + Mathf.Pow(bulletDirection.y * speed * Time.fixedDeltaTime, 2));
         
-        if (distanceTravelled >= 6.1)
+        if (distanceTravelled >= 10)
         {
             Destroy(gameObject);
         }
