@@ -30,7 +30,7 @@ public class mainBullet : MonoBehaviour
 
             PlayerController player = collision.GetComponent<PlayerController>();
             player.takeDamage(damage);
-            print("sdofgbiudfgbu");
+            //print("sdofgbiudfgbu");
             Destroy(gameObject);
 
             Debug.Log(player.Health);
@@ -38,6 +38,9 @@ public class mainBullet : MonoBehaviour
             //playerController.cooldownHandler.combatTimerCooldownStart();
             //print(playerController.Health);
             player.cooldownHandler.combatTimerCooldownStart();
+        } else if (collision.tag == "parede")
+        {
+            Destroy(gameObject);
         }
     }
     void Start()

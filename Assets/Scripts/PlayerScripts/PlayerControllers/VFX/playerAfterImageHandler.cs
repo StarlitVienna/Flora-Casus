@@ -13,7 +13,7 @@ public class playerAfterImageHandler : MonoBehaviour
     private float activated;
 
     private float alpha;
-    private float alphaScale = 0.85f;
+    private float alphaScale = 1f;
 
     private Color color;
 

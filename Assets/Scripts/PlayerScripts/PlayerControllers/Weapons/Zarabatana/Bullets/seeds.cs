@@ -55,6 +55,24 @@ public class seeds : MonoBehaviour
                 //print(playerController.Health);
                 enemy.player.cooldownHandler.combatTimerCooldownStart();
             }
+        } else if (collision.tag == "spirals")
+        {
+            spiral enemy = collision.GetComponent<spiral>();
+            if (!enemy.dead)
+            {
+                enemy.takeDamage(damage);
+                //print("sdofgbiudfgbu");
+                Destroy(gameObject);
+
+                Debug.Log(enemy.Health);
+
+                //playerController.cooldownHandler.combatTimerCooldownStart();
+                //print(playerController.Health);
+                enemy.player.cooldownHandler.combatTimerCooldownStart();
+            }
+        } else if (collision.tag == "parede")
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -68,7 +86,7 @@ public class seeds : MonoBehaviour
         rb.MovePosition(bulletTransform.position + bulletDirection * speed * Time.fixedDeltaTime);
         distanceTravelled += Mathf.Sqrt(Mathf.Pow(bulletDirection.x * speed * Time.fixedDeltaTime, 2) + Mathf.Pow(bulletDirection.y * speed * Time.fixedDeltaTime, 2));
         
-        if (distanceTravelled >= 10)
+        if (distanceTravelled >= 20)
         {
             Destroy(gameObject);
         }

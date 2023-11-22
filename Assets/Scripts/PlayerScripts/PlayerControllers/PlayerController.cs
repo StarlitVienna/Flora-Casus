@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     public bl_Joystick joystick;
 
+    public spawnScript spawner;
+
     public Dash dashHandler;
     public playerCooldownHandler cooldownHandler;
     public Camera cam;
@@ -38,10 +40,10 @@ public class PlayerController : MonoBehaviour
     public float aimAngle;
     public float aimAngleDegrees;
 
-    private float speed = 40f;
+    private float speed = 60f;
     private float attackSpeed = 1.5f;
 
-    private float health = 10f;
+    private float health = 40f;
 
     // KILLS
     private float score = 0;
@@ -79,6 +81,7 @@ public class PlayerController : MonoBehaviour
     public mortisCanvas mortCanva;
 
     public flamenguistaScript flamenguista;
+    public ribeiroScript ribeiro;
 
 
     public mainHealthBar healthBar;
@@ -125,6 +128,8 @@ public class PlayerController : MonoBehaviour
     public void reloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+        dead = false;
     }
     void Start()
     {
@@ -228,6 +233,7 @@ public class PlayerController : MonoBehaviour
     void startADialogue(InputAction.CallbackContext context)
     {
         flamenguista.startDialogue();
+        ribeiro.startDialogue();
     }
     void openCloseDiary(InputAction.CallbackContext context)
     {
@@ -368,6 +374,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        if (spawner.spawned)
+        {
+            animator.SetTrigger("spawned");
+        }
 
         if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {

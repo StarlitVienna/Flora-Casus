@@ -14,11 +14,11 @@ namespace TMPro.Examples
 
         public Transform CameraTarget;
 
-        public float FollowDistance = 30.0f;
-        public float MaxFollowDistance = 100.0f;
+        public float FollowDistance = 3.0f;
+        public float MaxFollowDistance = 5.0f;
         public float MinFollowDistance = 2.0f;
 
-        public float ElevationAngle = 30.0f;
+        public float ElevationAngle = 10.0f;
         public float MaxElevationAngle = 85.0f;
         public float MinElevationAngle = 0f;
 
@@ -26,14 +26,14 @@ namespace TMPro.Examples
 
         public CameraModes CameraMode = CameraModes.Follow;
 
-        public bool MovementSmoothing = true;
+        public bool MovementSmoothing = false;
         public bool RotationSmoothing = false;
         private bool previousSmoothing;
 
-        public float MovementSmoothingValue = 25f;
-        public float RotationSmoothingValue = 5.0f;
+        public float MovementSmoothingValue = 0.05f;
+        public float RotationSmoothingValue = 0.05f;
 
-        public float MoveSensitivity = 2.0f;
+        public float MoveSensitivity = 1.0f;
 
         private Vector3 currentVelocity = Vector3.zero;
         private Vector3 desiredPosition;
