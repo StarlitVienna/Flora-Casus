@@ -1,8 +1,7 @@
 <div align='center'>
 
 <h1>Flora Casus</h1>
-<h2> <a href="https://starlitvienna.com"> CLIQUE PARA JOGAR </a></h2>
-<h2><a href="https://starlitvienna.itch.io/flora-casus">também disponível no itch.io</a></h2>
+<h2><a href="https://starlitvienna.itch.io/flora-casus">clique para jogar no itch.io</a></h2>
 <p>Atualmente disponível apenas para pc</p>
 
 <p>Flora Casus é um jogo sobre um espírito da floresta, cuja missão é ajudar a natureza a enfrentar os problemas da ação antrópica causados no meio-ambiente</p>
