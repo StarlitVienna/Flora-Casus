@@ -26,7 +26,7 @@ public class seeds : MonoBehaviour
     void Start()
     {
         speed = 15f;
-        damage = 2;
+        damage = 3.5f;
 
         //playerController = gameObject.GetComponent<PlayerController>();
         bulletTransform = gameObject.GetComponent<Transform>();

@@ -12,11 +12,12 @@ public class ribeiroScript : MonoBehaviour
     public TMP_Text dialogueText;
     public handleDialogueImages dialogImageHandler;
 
-    string[] sentences = new string[16] {
-        "Nosso salvador, você realmente chegou…",
-        "Após tanto tempo implorando por sua vinda",
+    private string[] sentences = new string[17] {
+        "Você realmente chegou…",
+        "Após tanto tempo implorando por sua vinda ",
         "Nós precisamos de você.",
         "A floresta está morrendo, já não temos tanta água quanto antes",
+        "Ah, essa floresta, meu lar, tudo que nos cerca, está tudo sendo levado, tudo sendo destru�do por essa empresa, que está buscando mais e mais recursos daqui.",
         "Nossa flora já não vive como se vivia em tempos passados",
         "As pessoas que trabalham nessas empresas…",
         "Parecem não se importar com a vida.",
@@ -28,7 +29,7 @@ public class ribeiroScript : MonoBehaviour
         "Mais abaixo, um pouco depois do rio, há uma região sem árvores",
         "Os agentes que destruíram a vida estão lá.",
         "Ajude-nos a recuperar a vitalidade da floresta",
-        "Vá!"
+        "Vá!",
     };
 
     private int sentenceNumber;
@@ -71,7 +72,7 @@ public class ribeiroScript : MonoBehaviour
         }
         else
         {
-            if (sentenceNumber < 7)
+            if (sentenceNumber < 16)
             {
                 ++sentenceNumber;
             }

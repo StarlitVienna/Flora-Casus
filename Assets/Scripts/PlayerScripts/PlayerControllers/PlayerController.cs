@@ -235,6 +235,13 @@ public class PlayerController : MonoBehaviour
         flamenguista.startDialogue();
         ribeiro.startDialogue();
     }
+
+    public void mobileStartADialogue()
+    {
+        flamenguista.startDialogue();
+        ribeiro.startDialogue();
+    }
+
     void openCloseDiary(InputAction.CallbackContext context)
     {
         if (isDiaryUnlocked)
@@ -299,7 +306,75 @@ public class PlayerController : MonoBehaviour
         {
             if (cooldownHandler.nextBarrage < Time.time)
             {
-                zarabatana.shoot(aimAngle, mouseAngleXY);
+                //ff (movementInput.x)
+                print(movementInput.x);
+                /*
+                if (movementInput.x > 0)
+                {
+                    aimAngle = 0 * Mathf.Deg2Rad;
+                    //attackDirection = attackDirections.right;
+                }
+                else if (movementInput.x < 0)
+                {
+                    aimAngle = 180 * Mathf.Deg2Rad;
+                }
+                else if (movementInput.y > 0)
+                {
+                    aimAngle = 90 * Mathf.Deg2Rad;
+                }
+                else if (movementInput.y < 0)
+                {
+                    aimAngle = 270 * Mathf.Deg2Rad;
+                }
+                else
+                {
+                    aimAngle = 270 * Mathf.Deg2Rad;
+                }
+                */
+                aimAngle = Mathf.Atan2(movementInput.y, movementInput.x);
+                //aimAngle = 1.5708f; //90 degrees
+                zarabatana.shoot(aimAngle);
+                cooldownHandler.barrageCooldownStart();
+                animator.SetFloat("Horizontal", Mathf.Cos(aimAngle));
+                animator.SetFloat("Vertical", Mathf.Sin(aimAngle));
+                animator.SetTrigger("shoot");
+                //Debug.Log(aimAngle);
+            }
+        }
+    }
+
+    public void mobileShoot()
+    {
+        if (!dead && Time.timeScale > 0.01 && !playerActionsStopped && isZarabatanaUnlocked)
+        {
+            if (cooldownHandler.nextBarrage < Time.time)
+            {
+                //ff (movementInput.x)
+                print(movementInput.x);
+
+                if (movementInput.x > 0)
+                {
+                    aimAngle = 0 * Mathf.Deg2Rad;
+                    //attackDirection = attackDirections.right;
+                }
+                else if (movementInput.x < 0)
+                {
+                    aimAngle = 180 * Mathf.Deg2Rad;
+                }
+                else if (movementInput.y > 0)
+                {
+                    aimAngle = 90 * Mathf.Deg2Rad;
+                }
+                else if (movementInput.y < 0)
+                {
+                    aimAngle = 270 * Mathf.Deg2Rad;
+                }
+                else
+                {
+                    aimAngle = 270 * Mathf.Deg2Rad;
+                }
+                //aimAngle = 1.5708f; //90 degrees
+                zarabatana.shoot(aimAngle);
                 cooldownHandler.barrageCooldownStart();
                 animator.SetFloat("Horizontal", Mathf.Cos(aimAngle));
                 animator.SetFloat("Vertical", Mathf.Sin(aimAngle));
@@ -368,6 +443,22 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public bool joystickMode;
+
+    public void switchInputMode()
+    {
+
+        if (joystickMode == true)
+        {
+            joystickMode = false;
+            joystickCanvas.enabled = false;
+        } else
+        {
+            joystickMode = true;
+            joystickCanvas.enabled = true;
+        }
+    }
+
 
 
     // Update is called once per frame
@@ -382,14 +473,16 @@ public class PlayerController : MonoBehaviour
         if (!dead && Time.timeScale > 0.01 && !playerActionsStopped)
         {
             healthBar.setHealth(health);
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            if (joystickMode == true)
             {
                 if (joystick.Horizontal > 0.0004f)
                 {
-                    movementInput.x = 1;
+                    movementInput.x =  (joystick.Horizontal * speed) / 333.333333333f;
+                    print(movementInput.x);
                 } else if (joystick.Horizontal < -0.0004f)
                 {
-                    movementInput.x = -1;
+                    movementInput.x = (joystick.Horizontal * speed) / 333.333333333f;
+                    print(movementInput.x);
                 } else
                 {
                     movementInput.x = 0;
@@ -399,10 +492,12 @@ public class PlayerController : MonoBehaviour
 
                 if (joystick.Vertical > 0.0004f)
                 {
-                    movementInput.y = 1;
+                    movementInput.y = joystick.Vertical * speed / 333.333333333f;
+                    print(movementInput.x);
                 } else if (joystick.Vertical < -0.0004f)
                 {
-                    movementInput.y = -1;
+                    movementInput.y = joystick.Vertical * speed / 333.333333333f;
+                    print(movementInput.x);
                 } else
                 {
                     movementInput.y = 0;
@@ -413,6 +508,8 @@ public class PlayerController : MonoBehaviour
                 if (!playerActionsStopped)
                 {
                     movementInput = controllerInputs.Player.Move.ReadValue<Vector2>();
+                    //print(movementInput.x);
+                    //print(movementInput.y);
                 } else
                 {
                     print("STOPED");

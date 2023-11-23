@@ -29,9 +29,9 @@ public class barragemScript : MonoBehaviour
         {
             isPlayerInRange = true;
             playerController.rachaduraInRange = true;
-            print("é");
-            print("é");
-            print("é");
+            print("ï¿½");
+            print("ï¿½");
+            print("ï¿½");
         }
     }
 

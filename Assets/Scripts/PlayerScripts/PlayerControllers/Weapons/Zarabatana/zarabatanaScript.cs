@@ -19,7 +19,7 @@ public class zarabatanaScript : MonoBehaviour
         
     }
 
-    public void shoot(float aimAngle, Vector2 aimAngleXY)
+    public void shoot(float aimAngle)
     {
         Instantiate(bulletPrefab, zarabatanaTransform.position, Quaternion.Euler(0, 0, aimAngle * Mathf.Rad2Deg));
         //Debug.Log(aimAngleQuaternion);
