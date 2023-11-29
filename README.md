@@ -11,4 +11,4 @@
 </div>
 
 ## :star2: Resumo do projeto
-<h3>O jogo "Flora Casus" busca conscientizar jovens sobre a monopolização de empresas e ações antrópicas na Amazônia e na Caatinga. Os jogadores enfrentarão desafios relacionados à preservação ambiental, explorando as consequências da atividade humana nessas regiões. A narrativa destaca a importância de tomar decisões éticas para evitar a degradação desses ecossistemas vitais.</h3>
+<p>O jogo "Flora Casus" busca conscientizar jovens sobre a monopolização de empresas e ações antrópicas na Amazônia e na Caatinga. Os jogadores enfrentarão desafios relacionados à preservação ambiental, explorando as consequências da atividade humana nessas regiões. A narrativa destaca a importância de tomar decisões éticas para evitar a degradação desses ecossistemas vitais.</p>
