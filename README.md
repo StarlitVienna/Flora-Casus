@@ -1,6 +1,6 @@
 <h1 align="center" id="title">Flora Casus</h1>
 
-<p align="center"><img src="https://github.com/StarlitVienna/Flora-Casus/blob/master/screenshots/aaaaaaaa.jpg?raw=true" alt="project-image"></p>
+<p align="center"><img src="https://github.com/StarlitVienna/Flora-Casus/blob/master/screenshots/ddvcc.jpg?raw=true" alt="project-image"></p>
 
 <p>Projeto abrangente para conclusão do itinerário formativo do Colégio Embraer - Juarez Wanderley</p>
 
