@@ -10,7 +10,7 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://github.com/StarlitVienna/Flora-Casus/blob/master/screenshots/mapa.jpg" alt="project-screenshot" width="400" height="400/">
+<img src="https://github.com/StarlitVienna/Flora-Casus/blob/master/screenshots/mapa.jpg" alt="project-screenshot" width="920" height="518/">
 
   
   
